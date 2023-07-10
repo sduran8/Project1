@@ -1,7 +1,7 @@
 
 # Toy Company Inventory Management
 
-This project is an inventory management solution designed for a toy company. It enables administrators to manage the entities (toys) at various warehouses, providing features such as viewing, adding, removing, and altering toy records. The application offers an intuitive user interface to facilitate efficient inventory management.
+This project is an inventory management solution designed for a toy company. It enables administrators to manage the products (toys) at various warehouses, providing features such as viewing, adding, removing, and altering toy records. The application offers an intuitive user interface to facilitate efficient inventory management.
 
 ## Table of Contents
 - [Features](#features)
@@ -13,10 +13,10 @@ This project is an inventory management solution designed for a toy company. It 
 
 ## Features
 
-- View entities (toys) available in each warehouse.
-- Add new entities to a specific warehouse.
-- Remove entities from a warehouse.
-- Update the quantity of existing entities in a warehouse.
+- View products (toys) available in each warehouse.
+- Add new products to a specific warehouse.
+- Remove products from a warehouse.
+- Update the quantity of existing products in a warehouse.
 - Handle maximum capacity constraints of warehouses.
 - Intuitive user interface for easy navigation and interaction.
 - Clear and concise UI/UX design.
@@ -27,9 +27,9 @@ The database structure for this project consists of the following tables:
 
 - Warehouse: Stores information about the company's warehouses, including their names, maximum capacities, locations, and addresses.
 
-- Entity: Represents the entities (toys) available in the inventory. It includes attributes such as entity name, category, description, price, dimensions, and weight.
+- Product: Represents the products (toys) available in the inventory. It includes attributes such as product name, category, description, price, dimensions, and weight.
 
-- Inventory: Connects the warehouses and entities, tracking the quantity of each entity in a specific warehouse.
+- Inventory: Connects the warehouses and products, tracking the quantity of each product in a specific warehouse.
 
 ## Installation
 
@@ -66,13 +66,13 @@ To run this inventory management solution locally, follow these steps:
 
 2. Navigate to the Warehouse section to view a list of warehouses and their respective information.
 
-3. To manage the entities (toys) within a warehouse:
-   - View the existing entities and their quantities.
-   - Add new entities to the warehouse, specifying the necessary details.
-   - Remove entities from the warehouse.
-   - Update the quantity of existing entities.
+3. To manage the products (toys) within a warehouse:
+   - View the existing products and their quantities.
+   - Add new products to the warehouse, specifying the necessary details.
+   - Remove products from the warehouse.
+   - Update the quantity of existing products.
 
-4. Ensure that the maximum capacity of each warehouse is not exceeded when adding or updating entities.
+4. Ensure that the maximum capacity of each warehouse is not exceeded when adding or updating products.
 
 5. Utilize the user-friendly interface to efficiently manage the company's toy inventory across different warehouses.
 

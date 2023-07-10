@@ -1,5 +1,5 @@
 package com.toycompany.toycompany.services;
 
-public class EntityService {
+public class ProductService {
     
 }
