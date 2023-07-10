@@ -1,16 +1,23 @@
-spring:
-    datasource:
-        url: 
-        username: 
-        password: 
-    output:
-        ansi:
-            enabled: ALWAYS 
-
-server:
-    port: 8282                             
-
 logging:
     level:
         com:
             skillstorm: debug
+
+spring:
+    jpa:
+        database: POSTGRESQL
+        show-sql: true
+    datasource:
+        url: jdbc:postgresql://localhost:5432/ToyCompany
+        username: postgres
+        password: "@SD16!cd"
+        driverClassName: org.postgresql.Driver 
+    output:
+        ansi:
+            enabled: ALWAYS 
+    sql:
+        init:
+            platform: postgres
+
+server:
+    port: 8282                             
