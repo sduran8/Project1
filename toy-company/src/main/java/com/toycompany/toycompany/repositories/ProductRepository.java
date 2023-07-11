@@ -16,15 +16,23 @@ import com.toycompany.toycompany.models.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    /* Queries the table based on a given category */
+    /* Queries the Product table based on a given name */
+
+    public Optional<List<Product>> findAllByProductName(String name);
+    
+    /* Queries the Product table based on a given category */
 
     public Optional<List<Product>> findAllByProductCategory(String category);
 
-    /* Queries the table based on a given price */
+    /* Queries the Product table based on a given price */
 
-    public Optional<List<Product>> findAllByProductPrice(double price);
+    public Optional<List<Product>> findAllByProductPriceLessThanEqual(double price);
 
-     /* Queries the table to update the description of a product */
+    /* Queries the Product table based on a given weight */
+
+    public Optional<List<Product>> findAllByProductWeightLessThanEqual(double weight);
+
+     /* Queries the Product table to update the description of a product */
 
      @Modifying
      @Transactional

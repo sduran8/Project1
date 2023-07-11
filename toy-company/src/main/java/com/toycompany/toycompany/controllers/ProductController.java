@@ -48,6 +48,17 @@ public class ProductController {
         return new ResponseEntity<Product>(product, HttpStatus.OK);
     }
 
+    /* Returns product(s) based on a given Name */
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<Product>> findProductsByName(@PathVariable String name) {
+        List<Product> products = productService.findProductsByName(name);
+        if (products == null)
+            return ResponseEntity.noContent().build();
+        else
+            return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
+    }
+
     /* Returns product(s) based on a given Category */
 
     @GetMapping("/category/{category}")
@@ -64,6 +75,17 @@ public class ProductController {
     @GetMapping("/price/{price}")
     public ResponseEntity<List<Product>> findProductsByPrice(@PathVariable double price) {
         List<Product> products = productService.findProductsByPrice(price);
+        if (products == null)
+            return ResponseEntity.noContent().build();
+        else
+            return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
+    }
+
+    /* Returns product(s) based on a given weight */
+
+    @GetMapping("/weight/{weight}")
+    public ResponseEntity<List<Product>> findProductsByWeight(@PathVariable double weight) {
+        List<Product> products = productService.findProductsByWeight(weight);
         if (products == null)
             return ResponseEntity.noContent().build();
         else
@@ -89,8 +111,7 @@ public class ProductController {
     /* Updates the description of a product */
 
     @PutMapping("/product/updateDescription")
-    public ResponseEntity<Integer> updateProductDescription(@RequestBody Product product,
-            @RequestParam String description) {
+    public ResponseEntity<Integer> updateProductDescription(@RequestBody Product product, @RequestParam String description) {
         int updated = productService.updateDescription(product, description);
         return new ResponseEntity<Integer>(updated, HttpStatus.OK);
     }
@@ -102,7 +123,5 @@ public class ProductController {
         productService.deleteProduct(product);
         return ResponseEntity.noContent().build();
     }
-
-    
 
 }

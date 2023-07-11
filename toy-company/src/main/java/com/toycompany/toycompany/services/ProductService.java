@@ -41,10 +41,28 @@ public class ProductService {
         return null;
     }
 
+    /* Returns product(s) based on a given Name */
+
+    public List<Product> findProductsByName(String name) {
+        Optional<List<Product>> product = productRepository.findAllByProductName(name);
+        if (product.isPresent())
+            return product.get();
+        return null;
+    }
+
     /* Returns product(s) based on a given Price */
 
     public List<Product> findProductsByPrice(Double price) {
-        Optional<List<Product>> product = productRepository.findAllByProductPrice(price);
+        Optional<List<Product>> product = productRepository.findAllByProductPriceLessThanEqual(price);
+        if (product.isPresent())
+            return product.get();
+        return null;
+    }
+
+    /* Returns product(s) based on a given Weight */
+
+    public List<Product> findProductsByWeight(Double weight) {
+        Optional<List<Product>> product = productRepository.findAllByProductWeightLessThanEqual(weight);
         if (product.isPresent())
             return product.get();
         return null;
