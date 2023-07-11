@@ -20,7 +20,6 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int inventoryId;
 
-
     @ManyToOne
     @JoinColumn(name = "warehouse_id")
     private Warehouse warehouse;
