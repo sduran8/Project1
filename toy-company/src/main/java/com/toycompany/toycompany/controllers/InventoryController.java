@@ -49,7 +49,7 @@ public class InventoryController {
 
     /* Returns Inventory based on a given Product ID */
 
-    @GetMapping("/shipment/{productId}")
+    @GetMapping("/p_shipment/{productId}")
     public ResponseEntity<List<Inventory>> getAllInventoryByProductId(@PathVariable int productId) {
         List<Inventory> inventoryList = inventoryService.findAllInventoryByProductId(productId);
         if (inventoryList != null && !inventoryList.isEmpty()) {
@@ -61,7 +61,7 @@ public class InventoryController {
 
     /* Returns Inventory based on a given Warehouse ID */
 
-    @GetMapping("/shipment/{warehouseId}")
+    @GetMapping("/w_shipment/{warehouseId}")
     public ResponseEntity<List<Inventory>> getAllInventoryByWarehouseId(@PathVariable int warehouseId) {
         List<Inventory> inventoryList = inventoryService.findAllInventoryByWarehouseId(warehouseId);
         if (inventoryList != null && !inventoryList.isEmpty()) {
