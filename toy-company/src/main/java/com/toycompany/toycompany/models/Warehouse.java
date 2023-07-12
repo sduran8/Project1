@@ -14,7 +14,7 @@ public class Warehouse {
     /* ATTRIBUTES */
 
     @Id
-    @Column
+    @Column(name = "warehouse_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int warehouseId;
 
