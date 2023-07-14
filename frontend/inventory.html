@@ -30,18 +30,53 @@
     <main class="body">
         <div class="table">
     
+            <!-- NEW INVENTORY -->
             <form class="form-container col-lg-6" id="form">
                 
-                <label for="warehouse_name" class="form-label"> Warehouse </label>
-                <input type="text" id="warehouse_name" class="form-control">
+                <label for="new-warehouse-name" class="form-label"> Warehouse </label>
+                <input type="text" id="new-warehouse-name" class="form-control">
     
-                <label for="product_name" class="form-label"> Product </label>
-                <input type="text" id="product_name" class="form-control">
+                <label for="new-product-name" class="form-label"> Product </label>
+                <input type="text" id="new-product-name" class="form-control">
     
-                <label for="inventory_quantity" class="form-label"> Quantity </label>
-                <input type="text" id="inventory_quantity" class="form-control">
+                <label for="new-inventory-quantity" class="form-label"> Quantity </label>
+                <input type="text" id="new-inventory-quantity" class="form-control">
     
-                <button type="button" onclick="addInventory()"> Add Inventory </button>
+                <input id="save-button" name="save-button" type="submit" value="Save Inventory" class="button" />
+            </form>
+
+            <!-- UPDATE INVENTORY -->
+            <form class="form-container col-lg-6" id="form" style="display: none;">
+            
+                <label for="update-warehouse-name" class="form-label"> Warehouse </label>
+                <input type="text" id="update-warehouse-name" class="form-control">
+            
+                <label for="update-product-name" class="form-label"> Product </label>
+                <input type="text" id="update-product-name" class="form-control">
+            
+                <label for="update-inventory-quantity" class="form-label"> Quantity </label>
+                <input type="text" id="update-inventory-quantity" class="form-control">
+            
+                <input id="update-button" name="update-button" type="submit" value="Update Inventory" class="button" />
+
+                <button id="update-cancel-button" class="button"> Cancel </button>
+            </form>
+
+            <!-- DELETE INVENTORY -->
+            <form class="form-container col-lg-6" id="form" style="display: none;">
+            
+                <label for="delete-warehouse-name" class="form-label"> Warehouse </label>
+                <input type="text" id="delete-warehouse-name" class="form-control">
+            
+                <label for="delete-product-name" class="form-label"> Product </label>
+                <input type="text" id="delete-product-name" class="form-control">
+            
+                <label for="delete-inventory-quantity" class="form-label"> Quantity </label>
+                <input type="text" id="delete-inventory-quantity" class="form-control">
+            
+                <input id="delete-button" name="delete-button" type="submit" value="Delete Inventory" class="button" />
+            
+                <button id="delete-cancel-button" class="button"> Cancel </button>
             </form>
     
             <table width="100%">

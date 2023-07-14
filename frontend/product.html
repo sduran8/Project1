@@ -30,26 +30,77 @@
     <main class="body">
         <div class="table">
     
+            <!-- NEW PRODUCT-->
             <form class="form-container col-lg-6" id="form">
-                <label for="product_name" class="form-label"> Name </label>
-                <input type="text" id="product_name" class="form-control">
+                <label for="new-product-name" class="form-label"> Name </label>
+                <input type="text" id="new-product-name" class="form-control">
     
-                <label for="product_category" class="form-label"> Category </label>
-                <input type="text" id="product_category" class="form-control">
+                <label for="new-product-category" class="form-label"> Category </label>
+                <input type="text" id="new-product-category" class="form-control">
     
-                <label for="product_description" class="form-label"> Description </label>
-                <input type="text" id="product_description" class="form-control">
+                <label for="new-product-description" class="form-label"> Description </label>
+                <input type="text" id="new-product-description" class="form-control">
     
-                <label for="product_price" class="form-label"> Price </label>
-                <input type="text" id="product_price" class="form-control">
+                <label for="new-product-price" class="form-label"> Price </label>
+                <input type="text" id="new-product-price" class="form-control">
 
-                <label for="product_dimensions" class="form-label"> Dimensions </label>
-                <input type="text" id="product_dimensions" class="form-control">
+                <label for="new-product-dimensions" class="form-label"> Dimensions </label>
+                <input type="text" id="new-product-dimensions" class="form-control">
                 
-                <label for="product_weight" class="form-label"> Weight </label>
-                <input type="text" id="product_weight" class="form-control">
+                <label for="new-product-weight" class="form-label"> Weight </label>
+                <input type="text" id="new-product-weight" class="form-control">
     
-                <button type="button" onclick="addProduct()"> Add Product </button>
+                <input id="save-button" name="save-button" type="submit" value="Save Product" class="button" />
+            </form>
+
+            <!-- UPDATE PRODUCT-->
+            <form class="form-container col-lg-6" id="form" style="display: none;">
+                <label for="update-product-name" class="form-label"> Name </label>
+                <input type="text" id="update-product-name" class="form-control">
+            
+                <label for="update-product-category" class="form-label"> Category </label>
+                <input type="text" id="update-product-category" class="form-control">
+            
+                <label for="update-product-description" class="form-label"> Description </label>
+                <input type="text" id="update-product-description" class="form-control">
+            
+                <label for="update-product-price" class="form-label"> Price </label>
+                <input type="text" id="update-product-price" class="form-control">
+            
+                <label for="update-product-dimensions" class="form-label"> Dimensions </label>
+                <input type="text" id="update-product-dimensions" class="form-control">
+            
+                <label for="update-product-weight" class="form-label"> Weight </label>
+                <input type="text" id="update-product-weight" class="form-control">
+            
+                <input id="update-button" name="update-button" type="submit" value="Update Product" class="button" />
+
+                <button id="update-cancel-button" class="button"> Cancel </button>
+            </form>
+
+            <!-- DELETE PRODUCT-->
+            <form class="form-container col-lg-6" id="form" style="display: none;">
+                <label for="delete-product-name" class="form-label"> Name </label>
+                <input type="text" id="delete-product-name" class="form-control">
+            
+                <label for="delete-product-category" class="form-label"> Category </label>
+                <input type="text" id="delete-product-category" class="form-control">
+            
+                <label for="delete-product-description" class="form-label"> Description </label>
+                <input type="text" id="delete-product-description" class="form-control">
+            
+                <label for="delete-product-price" class="form-label"> Price </label>
+                <input type="text" id="delete-product-price" class="form-control">
+            
+                <label for="delete-product-dimensions" class="form-label"> Dimensions </label>
+                <input type="text" id="delete-product-dimensions" class="form-control">
+            
+                <label for="delete-product-weight" class="form-label"> Weight </label>
+                <input type="text" id="delete-product-weight" class="form-control">
+            
+                <input id="delete-button" name="delete-button" type="submit" value="Delete Product" class="button" />
+
+                <button id="update-cancel-button" class="button"> Cancel </button>
             </form>
     
             <table width="100%">

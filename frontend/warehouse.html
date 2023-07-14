@@ -30,20 +30,60 @@
     <main class="body">
         <div class="table">
 
-            <form class="form-container col-lg-6" id="form">
-                <label for="warehouse_name" class="form-label"> Name </label>
-                <input type="text" id="warehouse_name" class="form-control">
+            <!-- NEW WAREHOUSE -->
+            <form class="form-container col-lg-6" id="new-warehouse-form">
+                <label for="new-warehouse-name" class="form-label"> Name </label>
+                <input type="text" id="new-warehouse-name" class="form-control">
 
-                <label for="warehouse_location" class="form-label"> Location </label>
-                <input type="text" id="warehouse_location" class="form-control">
+                <label for="new-warehouse-location" class="form-label"> Location </label>
+                <input type="text" id="new-warehouse-location" class="form-control">
 
-                <label for="warehouse_address" class="form-label"> Address </label>
-                <input type="text" id="warehouse_address" class="form-control">
+                <label for="new-warehouse-address" class="form-label"> Address </label>
+                <input type="text" id="new-warehouse-address" class="form-control">
 
-                <label for="warehouse_capacity" class="form-label"> Capacity </label>
-                <input type="text" id="warehouse_capacity" class="form-control">
+                <label for="new-warehouse-capacity" class="form-label"> Capacity </label>
+                <input type="text" id="new-warehouse-capacity" class="form-control">
 
-                <button type="button" onclick="addWarehouse()"> Add Warehouse </button>
+                <input id="save-button" name="save-button" type="submit" value="Save Warehouse" class="button" />
+            </form>
+
+            <!-- UPDATE WAREHOUSE -->
+            <form class="form-container col-lg-6" id="update-warehouse-form" style="display: none;">
+                <label for="update-warehouse-name" class="form-label"> Name </label>
+                <input type="text" id="update-warehouse-name" class="form-control">
+            
+                <label for="update-warehouse-location" class="form-label"> Location </label>
+                <input type="text" id="update-warehouse-location" class="form-control">
+            
+                <label for="update-warehouse-address" class="form-label"> Address </label>
+                <input type="text" id="update-warehouse-address" class="form-control">
+            
+                <label for="update-warehouse-capacity" class="form-label"> Capacity </label>
+                <input type="text" id="update-warehouse-capacity" class="form-control">
+            
+                <input id="update-button" name="update-button" type="submit" value="Update Warehouse" class="button" />
+
+                <button id="update-cancel-button" class="button"> Cancel </button>
+            </form>
+
+            <!-- DELETE WAREHOUSE -->
+            <form class="form-container col-lg-6" id="delete-warehouse-form" style="display: none;">
+                <label for="delete-warehouse-name" class="form-label"> Name </label>
+                <input type="text" id="delete-warehouse-name" class="form-control">
+            
+                <label for="delete-warehouse-location" class="form-label"> Location </label>
+                <input type="text" id="delete-warehouse-location" class="form-control">
+            
+                <label for="delete-warehouse-address" class="form-label"> Address </label>
+                <input type="text" id="delete-warehouse-address" class="form-control">
+            
+                <label for="delete-warehouse-capacity" class="form-label"> Capacity </label>
+                <input type="text" id="delete-warehouse-capacity" class="form-control">
+            
+                <input id="delete-button" name="delete-button" type="submit" value="Delete Warehouse" class="button" />
+
+                <button id="update-delete-button" class="button"> Cancel </button>
+            
             </form>
 
             <table width="100%">
