@@ -18,7 +18,7 @@ async function getWarehouseById(warehouseid) {
     try {
         const response = await fetch(`http://localhost:8282/warehouses/warehouse/${warehouseid}`);
         if (!response.ok) {
-            throw new Error(`Error retrieving warehouse with ID ${warehouseid}`);
+            throw new Error(`Error retrieving warehouse with warehouseID ${warehouseid}`);
         }
         const warehouse = await response.json();
         return warehouse;
