@@ -73,7 +73,7 @@ public class InventoryController {
 
     /* Saves an individual Inventory (shipment) to the DB */
 
-    @PostMapping("/inventory")
+    @PostMapping("/addinventory")
     public ResponseEntity<Inventory> createInventory(@Valid @RequestBody Inventory inventory) {
         Inventory newInventory = inventoryService.saveInventory(inventory);
         return new ResponseEntity<Inventory>(newInventory, HttpStatus.CREATED);
@@ -81,7 +81,7 @@ public class InventoryController {
 
     /* Updates a Inventory (shipment) in the DB */
 
-    @PutMapping("/inventory")
+    @PutMapping("/addinventory")
     public ResponseEntity<Inventory> updateInventory(@RequestBody Inventory inventory) {
         Inventory newInventory = inventoryService.saveInventory(inventory);
         return new ResponseEntity<Inventory>(newInventory, HttpStatus.OK);

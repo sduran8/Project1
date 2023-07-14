@@ -154,3 +154,9 @@ tbody tr td {
   background-color: rgb(170, 170, 170);
   cursor: pointer;
 }
+
+.content {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}

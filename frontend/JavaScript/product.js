@@ -1,9 +1,9 @@
-// Function to fetch all products from the server
+// Function to send GET request to fetch all products
 async function getAllProducts() {
     try {
-        const response = await fetch('http://localhost:8282/products');
+        const response = await fetch("http://localhost:8282/products");
         if (!response.ok) {
-            throw new Error('Unable to fetch products.');
+            throw new Error("Error retrieving products");
         }
         const products = await response.json();
         return products;
@@ -13,12 +13,14 @@ async function getAllProducts() {
     }
 }
 
-// Function to fetch a product by ID from the server
+// Function to send GET request to fetch a product by ID
 async function getProductById(productId) {
     try {
-        const response = await fetch(`http://localhost:8282/products/product/${productId}`);
+        const response = await fetch(
+            `http://localhost:8282/products/product/${productId}`
+        );
         if (!response.ok) {
-            throw new Error(`Unable to fetch product with ID: ${productId}`);
+            throw new Error(`Error retrieving product with ID ${productId}`);
         }
         const product = await response.json();
         return product;
@@ -28,18 +30,18 @@ async function getProductById(productId) {
     }
 }
 
-// Function to create a new product
+// Function to send POST request to create a new product
 async function createProduct(product) {
     try {
-        const response = await fetch('http://localhost:8282/products/product', {
-            method: 'POST',
+        const response = await fetch("http://localhost:8282/products/product", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(product),
         });
         if (!response.ok) {
-            throw new Error('Unable to create the product.');
+            throw new Error("Error creating product");
         }
         const newProduct = await response.json();
         return newProduct;
@@ -49,18 +51,18 @@ async function createProduct(product) {
     }
 }
 
-// Function to update a product
+// Function to send PUT request to update a product
 async function updateProduct(product) {
     try {
-        const response = await fetch('http://localhost:8282/products/product', {
-            method: 'PUT',
+        const response = await fetch("http://localhost:8282/products/product", {
+            method: "PUT",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(product),
         });
         if (!response.ok) {
-            throw new Error(`Unable to update the product with ID ${product.productId}`);
+            throw new Error(`Error updating product with ID ${product.productId}`);
         }
         const updatedProduct = await response.json();
         return updatedProduct;
@@ -70,18 +72,18 @@ async function updateProduct(product) {
     }
 }
 
-// Function to delete a product
-async function deleteProduct(product) {
+// Function to send DELETE request to delete a product
+async function deleteProduct(productId) {
     try {
-        const response = await fetch('http://localhost:8282/products/product', {
-            method: 'DELETE',
+        const response = await fetch("http://localhost:8282/products/product", {
+            method: "DELETE",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(product),
+            body: JSON.stringify({ productId }),
         });
         if (!response.ok) {
-            throw new Error(`Unable to delete the product with ID ${product.productId}`);
+            throw new Error(`Error deleting product with ID ${productId}`);
         }
         return true;
     } catch (error) {
@@ -90,196 +92,162 @@ async function deleteProduct(product) {
     }
 }
 
-// Function to display the product data in the table
-function displayProductData(product) {
-    const productTableBody = document.getElementById('product-table-body');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td>${product.productId}</td>
-        <td>${product.productName}</td>
-        <td>${product.productCategory}</td>
-        <td>${product.productDescription}</td>
-        <td>${product.productPrice}</td>
-        <td>${product.productDimensions}</td>
-        <td>${product.productWeight}</td>
-        <td>
-        <button class="edit-button" onclick="editProduct(${product.productId})">Edit</button>
-        </td>
-        <td>
-        <button class="delete-button" onclick="deleteProductConfirmation(${product.productId})">Delete</button>
-        </td>
-    `;
-    productTableBody.appendChild(row);
+// Function to handle form submission for creating or updating a product
+async function handleFormSubmit(event) {
+    event.preventDefault();
+
+    // Get the form data
+    const productId = document.getElementById("new-product-id").value;
+    const productName = document.getElementById("new-product-name").value;
+    const productCategory = document.getElementById("new-product-category").value;
+    const productDescription = document.getElementById(
+        "new-product-description"
+    ).value;
+    const productPrice = document.getElementById("new-product-price").value;
+    const productDimensions = document.getElementById(
+        "new-product-dimensions"
+    ).value;
+    const productWeight = document.getElementById("new-product-weight").value;
+
+    // Create a product object
+    const product = {
+        productId: Number(productId),
+        productName,
+        productCategory,
+        productDescription,
+        productPrice: parseFloat(productPrice),
+        productDimensions,
+        productWeight: parseFloat(productWeight),
+    };
+
+    // Check if it's a new product or an update
+    if (!productId) {
+        // Create a new product
+        const newProduct = await createProduct(product);
+        if (newProduct) {
+            // Clear the form fields
+            clearFormFields();
+            // Fetch all products again and update the table
+            fetchAllProductsAndUpdateTable();
+        }
+    } else {
+        // Update an existing product
+        const updatedProduct = await updateProduct(product);
+        if (updatedProduct) {
+            // Clear the form fields
+            clearFormFields();
+            // Fetch all products again and update the table
+            fetchAllProductsAndUpdateTable();
+        }
+    }
 }
 
+// Function to handle product deletion
+async function handleProductDeletion(productId) {
+    const confirmed = confirm("Are you sure you want to delete this product?");
+    if (confirmed) {
+        const success = await deleteProduct(productId);
+        if (success) {
+            // Fetch all products again and update the table
+            fetchAllProductsAndUpdateTable();
+        }
+    }
+}
 
-// Function to populate the table with product data
-async function populateProductTable() {
+// Function to populate the form fields with product data for editing
+function populateFormFields(product) {
+    document.getElementById("new-product-id").value = product.productId;
+    document.getElementById("new-product-name").value = product.productName;
+    document.getElementById("new-product-category").value = product.productCategory;
+    document.getElementById("new-product-description").value =
+        product.productDescription;
+    document.getElementById("new-product-price").value = product.productPrice.toFixed(
+        2
+    );
+    document.getElementById("new-product-dimensions").value =
+        product.productDimensions;
+    document.getElementById("new-product-weight").value = product.productWeight.toFixed(
+        2
+    );
+}
+
+// Function to clear the form fields
+function clearFormFields() {
+    document.getElementById("new-product-id").value = "";
+    document.getElementById("new-product-name").value = "";
+    document.getElementById("new-product-category").value = "";
+    document.getElementById("new-product-description").value = "";
+    document.getElementById("new-product-price").value = "";
+    document.getElementById("new-product-dimensions").value = "";
+    document.getElementById("new-product-weight").value = "";
+}
+
+// Function to fetch all products, update the table, and set event listeners
+async function fetchAllProductsAndUpdateTable() {
     const products = await getAllProducts();
-    const productTableBody = document.getElementById('product-table-body');
-    productTableBody.innerHTML = '';
+    if (products) {
+        const tableBody = document.getElementById("product-table-body");
+        tableBody.innerHTML = ""; // Clear the existing table rows
 
-    if (products.length === 0) {
-        const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="9">No products found.</td>';
-        productTableBody.appendChild(emptyRow);
-    } else {
         products.forEach((product) => {
-            displayProductData(product);
+            const row = document.createElement("tr");
+
+            const idCell = document.createElement("td");
+            idCell.textContent = product.productId;
+            row.appendChild(idCell);
+
+            const nameCell = document.createElement("td");
+            nameCell.textContent = product.productName;
+            row.appendChild(nameCell);
+
+            const categoryCell = document.createElement("td");
+            categoryCell.textContent = product.productCategory;
+            row.appendChild(categoryCell);
+
+            const descriptionCell = document.createElement("td");
+            descriptionCell.textContent = product.productDescription;
+            row.appendChild(descriptionCell);
+
+            const priceCell = document.createElement("td");
+            priceCell.textContent = product.productPrice.toFixed(2);
+            row.appendChild(priceCell);
+
+            const dimensionsCell = document.createElement("td");
+            dimensionsCell.textContent = product.productDimensions;
+            row.appendChild(dimensionsCell);
+
+            const weightCell = document.createElement("td");
+            weightCell.textContent = product.productWeight.toFixed(2);
+            row.appendChild(weightCell);
+
+            const editCell = document.createElement("td");
+            const editButton = document.createElement("button");
+            editButton.textContent = "Edit";
+            editButton.classList.add("button"); // Add button class
+            editButton.addEventListener("click", () => {
+                populateFormFields(product);
+            });
+            editCell.appendChild(editButton);
+            row.appendChild(editCell);
+
+            const deleteCell = document.createElement("td");
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete";
+            deleteButton.classList.add("button"); // Add button class
+            deleteButton.addEventListener("click", () => {
+                handleProductDeletion(product.productId);
+            });
+            deleteCell.appendChild(deleteButton);
+            row.appendChild(deleteCell);
+
+            tableBody.appendChild(row);
         });
     }
 }
 
-// Function to clear the input fields in the new product form
-function clearNewProductForm() {
-    document.getElementById('new-product-id').value = '';
-    document.getElementById('new-product-name').value = '';
-    document.getElementById('new-product-category').value = '';
-    document.getElementById('new-product-description').value = '';
-    document.getElementById('new-product-price').value = '';
-    document.getElementById('new-product-dimensions').value = '';
-    document.getElementById('new-product-weight').value = '';
-}
+// Event listener for form submission
+const form = document.getElementById("new-product-form");
+form.addEventListener("submit", handleFormSubmit);
 
-// Function to handle the form submission for creating a new product
-async function handleNewProductFormSubmit(event) {
-    event.preventDefault();
-
-    const product = {
-        productName: document.getElementById('new-product-name').value,
-        productCategory: document.getElementById('new-product-category').value,
-        productDescription: document.getElementById('new-product-description').value,
-        productPrice: parseFloat(document.getElementById('new-product-price').value),
-        productDimensions: document.getElementById('new-product-dimensions').value,
-        productWeight: parseFloat(document.getElementById('new-product-weight').value),
-    };
-
-    const createdProduct = await createProduct(product);
-    if (createdProduct) {
-        displayProductData(createdProduct);
-        clearNewProductForm();
-    }
-}
-
-// Function to populate the update product form with the product data
-async function populateUpdateProductForm(productId) {
-    const product = await getProductById(productId);
-    if (product) {
-        document.getElementById('update-product-id').value = product.productId;
-        document.getElementById('update-product-name').value = product.productName;
-        document.getElementById('update-product-category').value = product.productCategory;
-        document.getElementById('update-product-description').value = product.productDescription;
-        document.getElementById('update-product-price').value = product.productPrice;
-        document.getElementById('update-product-dimensions').value = product.productDimensions;
-        document.getElementById('update-product-weight').value = product.productWeight;
-    }
-}
-
-// Function to handle the form submission for updating a product
-async function handleUpdateProductFormSubmit(event) {
-    event.preventDefault();
-    const product = {
-        productId: parseInt(document.getElementById('update-product-id').value),
-        productName: document.getElementById('update-product-name').value,
-        productCategory: document.getElementById('update-product-category').value,
-        productDescription: document.getElementById('update-product-description').value,
-        productPrice: parseFloat(document.getElementById('update-product-price').value),
-        productDimensions: document.getElementById('update-product-dimensions').value,
-        productWeight: parseFloat(document.getElementById('update-product-weight').value),
-    }
-    const updatedProduct = await updateProduct(product);
-    if (updatedProduct) {
-        // Update the table row
-        const productRow = document.querySelector(`#product-table-body tr:nth-child(${product.productId})`);
-        productRow.innerHTML = `
-        <td>${updatedProduct.productId}</td>
-        <td>${updatedProduct.productName}</td>
-        <td>${updatedProduct.productCategory}</td>
-        <td>${updatedProduct.productDescription}</td>
-        <td>${updatedProduct.productPrice}</td>
-        <td>${updatedProduct.productDimensions}</td>
-        <td>${updatedProduct.productWeight}</td>
-        <td>
-            <button class="edit-button" onclick="editProduct(${updatedProduct.productId})">Edit</button>
-        </td>
-        <td>
-            <button class="delete-button" onclick="deleteProductConfirmation(${updatedProduct.productId})">Delete</button>
-        </td>
-        `;
-        // Toggle back to the new product form
-        toggleForms('new-product-form');
-    }
-}
-
-// Function to handle the cancel button click in the update product form
-function handleUpdateCancelButtonClick() {
-    toggleForms('new-product-form');
-}
-
-// Function to handle the delete button click in the product row
-async function deleteProductConfirmation(productId) {
-    const confirmation = confirm('Are you sure you want to delete this product?');
-    if (confirmation) {
-        const product = await getProductById(productId);
-        if (product) {
-            // Delete the product
-            deleteProduct(product);
-            // Remove the table row
-            const productRow = document.querySelector(`#product-table-body tr:nth-child(${productId})`);
-            productRow.remove();
-        }
-    }
-}
-
-// Function to toggle between the new product form and the update product form
-function toggleForms(formId) {
-    const newProductForm = document.getElementById('new-product-form');
-    const updateProductForm = document.getElementById('update-product-form');
-    const deleteProductForm = document.getElementById('delete-product-form');
-
-    if (formId === 'new-product-form') {
-        newProductForm.style.display = 'block';
-        updateProductForm.style.display = 'none';
-        deleteProductForm.style.display = 'none';
-    } else if (formId === 'update-product-form') {
-        newProductForm.style.display = 'none';
-        updateProductForm.style.display = 'block';
-        deleteProductForm.style.display = 'none';
-    } else if (formId === 'delete-product-form') {
-        newProductForm.style.display = 'none';
-        updateProductForm.style.display = 'none';
-        deleteProductForm.style.display = 'block';
-    }
-}
-
-// Function to handle the edit button click in the product row
-async function editProduct(productId) {
-    await populateUpdateProductForm(productId);
-    toggleForms('update-product-form');
-}
-
-// Function to handle the delete button click in the product row
-async function deleteProductConfirmation(productId) {
-    const confirmation = confirm('Are you sure you want to delete this product?');
-    if (confirmation) {
-        const product = await getProductById(productId);
-        if (product) {
-            deleteProduct(product);
-            const productRow = document.querySelector(`#product-table-body tr:nth-child(${productId})`);
-            productRow.remove();
-        }
-    }
-}
-
-// Function to handle the cancel button click in the delete product form
-function handleDeleteCancelButtonClick() {
-    toggleForms('new-product-form');
-}
-
-// Initial setup
-document.getElementById('new-product-form').addEventListener('submit', handleNewProductFormSubmit);
-document.getElementById('update-product-form').addEventListener('submit', handleUpdateProductFormSubmit);
-document.getElementById('update-cancel-button').addEventListener('click', handleUpdateCancelButtonClick);
-document.getElementById('delete-cancel-button').addEventListener('click', handleDeleteCancelButtonClick);
-
-populateProductTable();
+// Fetch all products and update the table on page load
+fetchAllProductsAndUpdateTable();

@@ -1,277 +1,303 @@
-// Fetch all inventory
-function fetchInventory() {
-    fetch('http://localhost:8282/inventory')
-        .then(response => response.json())
-        .then(data => {
-            // Process the data and update the inventory table
-            updateInventoryTable(data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+// Function to fetch all inventories from the server
+async function getAllInventories() {
+    try {
+        const response = await fetch('http://localhost:8282/inventory');
+        if (!response.ok) {
+            throw new Error('Unable to fetch inventories.');
+        }
+        const inventories = await response.json();
+        return inventories;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 }
 
-// Create or update inventory
-function saveInventory(inventoryData) {
-    // Get the warehouse and product IDs based on their names
-    const warehouseName = inventoryData.warehouse.warehouseName;
-    const productName = inventoryData.product.productName;
-
-    Promise.all([
-        fetchWarehouseIdByName(warehouseName),
-        fetchProductIdByName(productName)
-    ])
-        .then(([warehouseId, productId]) => {
-            inventoryData.warehouse = { id: warehouseId };
-            inventoryData.product = { id: productId };
-
-            let url = 'http://localhost:8282/inventory/inventory';
-            let method = 'POST';
-
-            if (inventoryData.inventoryId) {
-                url += '/' + inventoryData.inventoryId;
-                method = 'PUT';
-            }
-
-            fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(inventoryData),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    // Display success message or handle errors
-                    console.log('Inventory saved:', data);
-                    // Fetch inventory again to update the table
-                    fetchInventory();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
-// Create or update inventory
-function saveInventory(inventoryData) {
-  // Get the warehouse and product IDs based on their names
-  const warehouseName = inventoryData.warehouse.warehouseName;
-  const productName = inventoryData.product.productName;
-
-  Promise.all([
-    fetchWarehouseIdByName(warehouseName),
-    fetchProductIdByName(productName)
-  ])
-    .then(([warehouseId, productId]) => {
-      inventoryData.warehouse = { id: warehouseId };
-      inventoryData.product = { id: productId };
-
-      let url = 'http://localhost:8282/inventory/inventory';
-      let method = 'POST';
-
-      if (inventoryData.inventoryId) {
-        url += '/' + inventoryData.inventoryId;
-        method = 'PUT';
-      }
-
-      fetch(url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(inventoryData),
-      })
-        .then(response => response.json())
-        .then(data => {
-          // Display success message or handle errors
-          console.log('Inventory saved:', data);
-          // Fetch inventory again to update the table
-          fetchInventory();
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+// Function to fetch a warehouse by name from the server
+async function getWarehouseByName(warehouseName) {
+    try {
+        const response = await fetch(`http://localhost:8282/warehouses/name/${warehouseName}`);
+        if (!response.ok) {
+            throw new Error(`Unable to fetch warehouse with name: ${warehouseName}`);
+        }
+        const warehouse = await response.json();
+        return warehouse;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 }
 
-
-// Function to fetch warehouse ID by name
-function fetchWarehouseIdByName(warehouseName) {
-    return fetch('http://localhost:8282/warehouses')
-        .then(response => response.json())
-        .then(warehouses => {
-            const warehouse = warehouses.find(warehouse => warehouse.name === warehouseName);
-            if (warehouse) {
-                return warehouse.id;
-            } else {
-                throw new Error(`Warehouse with name '${warehouseName}' not found.`);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            return null;
-        });
+// Function to fetch a product by name from the server
+async function getProductByName(productName) {
+    try {
+        const response = await fetch(`http://localhost:8282/products/name/${productName}`);
+        if (!response.ok) {
+            throw new Error(`Unable to fetch product with name: ${productName}`);
+        }
+        const product = await response.json();
+        return product;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 }
 
-// Function to fetch product ID by name
-function fetchProductIdByName(productName) {
-    return fetch('http://localhost:8282/products')
-        .then(response => response.json())
-        .then(products => {
-            const product = products.find(product => product.name === productName);
-            if (product) {
-                return product.id;
-            } else {
-                throw new Error(`Product with name '${productName}' not found.`);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            return null;
-        });
+// Function to fetch an inventory by ID from the server
+async function getInventoryById(inventoryId) {
+    try {
+        const response = await fetch(`http://localhost:8282/inventory/shipment/${inventoryId}`);
+        if (!response.ok) {
+            throw new Error(`Unable to fetch inventory with ID: ${inventoryId}`);
+        }
+        const inventory = await response.json();
+        return inventory;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 }
 
-// Delete inventory
-function deleteInventory(inventoryId) {
-    fetch('http://localhost:8282/inventory/inventory/' + inventoryId, {
-        method: 'DELETE',
-    })
-        .then(response => {
-            if (response.ok) {
-                console.log('Inventory deleted');
-                fetchInventory();
-            } else {
-                throw new Error('Unable to delete the inventory.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
+// Function to create a new inventory
+async function createInventory(inventory) {
+    try {
+        const response = await fetch('http://localhost:8282/inventory/addinventory', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(inventory),
         });
+        if (!response.ok) {
+            throw new Error('Unable to create the inventory.');
+        }
+        const newInventory = await response.json();
+        return newInventory;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 }
 
-// Event listener for form submission (create/update)
-document.getElementById('new-inventory-form').addEventListener('submit', function (event) {
+// Function to update an inventory
+async function updateInventory(inventory) {
+    try {
+        const response = await fetch('http://localhost:8282/inventory/addinventory', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(inventory),
+        });
+        if (!response.ok) {
+            throw new Error(`Unable to update the inventory with ID ${inventory.inventoryId}`);
+        }
+        const updatedInventory = await response.json();
+        return updatedInventory;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+// Function to delete an inventory
+async function deleteInventory(inventory) {
+    try {
+        const response = await fetch('http://localhost:8282/inventory/inventory', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(inventory),
+        });
+        if (!response.ok) {
+            throw new Error(`Unable to delete the inventory with ID ${inventory.inventoryId}`);
+        }
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
+
+// Function to display the inventory data in the table
+function displayInventoryData(inventory) {
+    const inventoryTableBody = document.getElementById('inventory-table-body');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${inventory.inventoryId}</td>
+        <td>${inventory.warehouse.warehouseName}</td>
+        <td>${inventory.product.productName}</td>
+        <td>${inventory.quantity}</td>
+        <td>
+        <button class="edit-button" onclick="editInventory(${inventory.inventoryId})">Edit</button>
+        </td>
+        <td>
+        <button class="delete-button" onclick="deleteInventoryConfirmation(${inventory.inventoryId})">Delete</button>
+        </td>
+    `;
+    inventoryTableBody.appendChild(row);
+}
+
+// Function to populate the table with inventory data
+async function populateInventoryTable() {
+    const inventories = await getAllInventories();
+    const inventoryTableBody = document.getElementById('inventory-table-body');
+    inventoryTableBody.innerHTML = '';
+
+    if (inventories.length === 0) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = '<td colspan="6">No inventories found.</td>';
+        inventoryTableBody.appendChild(emptyRow);
+    } else {
+        inventories.forEach((inventory) => {
+            displayInventoryData(inventory);
+        });
+    }
+}
+
+// Function to clear the input fields in the new inventory form
+function clearNewInventoryForm() {
+    document.getElementById('new-inventory-id').value = '';
+    document.getElementById('new-warehouse-name').value = '';
+    document.getElementById('new-product-name').value = '';
+    document.getElementById('new-inventory-quantity').value = '';
+}
+
+// Function to handle the form submission for creating a new inventory
+async function handleNewInventoryFormSubmit(event) {
     event.preventDefault();
 
     const warehouseName = document.getElementById('new-warehouse-name').value;
     const productName = document.getElementById('new-product-name').value;
     const quantity = parseInt(document.getElementById('new-inventory-quantity').value);
 
-    Promise.all([fetchWarehouseIdByName(warehouseName), fetchProductIdByName(productName)])
-        .then(([warehouseId, productId]) => {
-            const inventoryData = {
-                inventoryId: document.getElementById('new-inventory-id').value,
-                warehouse: { id: warehouseId },
-                product: { id: productId },
-                quantity: quantity,
-            };
+    const warehouse = await getWarehouseByName(warehouseName);
+    const product = await getProductByName(productName);
 
-            saveInventory(inventoryData);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-});
+    if (warehouse && product) {
+        const inventory = {
+            warehouseId: warehouse.warehouseId,
+            productId: product.productId,
+            quantity: quantity,
+        };
 
-// Event listener for form submission (update)
-document.getElementById('update-inventory-form').addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    const warehouseName = document.getElementById('update-warehouse-name').value;
-    const productName = document.getElementById('update-product-name').value;
-    const quantity = parseInt(document.getElementById('update-inventory-quantity').value);
-
-    Promise.all([fetchWarehouseIdByName(warehouseName), fetchProductIdByName(productName)])
-        .then(([warehouseId, productId]) => {
-            const inventoryData = {
-                inventoryId: document.getElementById('update-inventory-id').value,
-                warehouse: { id: warehouseId },
-                product: { id: productId },
-                quantity: quantity,
-            };
-
-            saveInventory(inventoryData);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-});
-
-// Event listener for delete button click
-document.getElementById('delete-button').addEventListener('click', function () {
-    const inventoryId = document.getElementById('delete-inventory-id').value;
-    deleteInventory(inventoryId);
-});
-
-// Function to update the inventory table
-function updateInventoryTable(inventoryData) {
-    const tableBody = document.getElementById('inventory-table-body');
-    tableBody.innerHTML = '';
-
-    inventoryData.forEach(inventory => {
-        const row = document.createElement('tr');
-
-        const idCell = document.createElement('td');
-        idCell.textContent = inventory.inventoryId;
-        row.appendChild(idCell);
-
-        const warehouseCell = document.createElement('td');
-        warehouseCell.textContent = inventory.warehouse.warehouseName;
-        row.appendChild(warehouseCell);
-
-        const productCell = document.createElement('td');
-        productCell.textContent = inventory.product.productName;
-        row.appendChild(productCell);
-
-        const quantityCell = document.createElement('td');
-        quantityCell.textContent = inventory.quantity;
-        row.appendChild(quantityCell);
-
-        const editCell = document.createElement('td');
-        const editButton = document.createElement('button');
-        editButton.textContent = 'Edit';
-        editButton.classList.add('button');
-        editButton.addEventListener('click', function () {
-            // Populate the update form with inventory data
-            document.getElementById('update-inventory-id').value = inventory.inventoryId;
-            document.getElementById('update-warehouse-name').value = inventory.warehouse.name;
-            document.getElementById('update-product-name').value = inventory.product.name;
-            document.getElementById('update-inventory-quantity').value = inventory.quantity;
-            // Show the update form and hide the other forms
-            document.getElementById('update-inventory-form').style.display = 'block';
-            document.getElementById('new-inventory-form').style.display = 'none';
-            document.getElementById('delete-inventory-form').style.display = 'none';
-        });
-        editCell.appendChild(editButton);
-        row.appendChild(editCell);
-
-        const deleteCell = document.createElement('td');
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.classList.add('button');
-        deleteButton.addEventListener('click', function () {
-            // Populate the delete form with inventory data
-            document.getElementById('delete-inventory-id').value = inventory.inventoryId;
-            document.getElementById('delete-warehouse-name').value = inventory.warehouse.name;
-            document.getElementById('delete-product-name').value = inventory.product.name;
-            document.getElementById('delete-inventory-quantity').value = inventory.quantity;
-            // Show the delete form and hide the other forms
-            document.getElementById('delete-inventory-form').style.display = 'block';
-            document.getElementById('new-inventory-form').style.display = 'none';
-            document.getElementById('update-inventory-form').style.display = 'none';
-        });
-        deleteCell.appendChild(deleteButton);
-        row.appendChild(deleteCell);
-
-        tableBody.appendChild(row);
-    });
+        const createdInventory = await createInventory(inventory);
+        if (createdInventory) {
+            displayInventoryData(createdInventory);
+            clearNewInventoryForm();
+        }
+    }
 }
 
-// Fetch inventory when the page loads
-fetchInventory();
+// Function to populate the update inventory form with the inventory data
+async function populateUpdateInventoryForm(inventoryId) {
+    const inventory = await getInventoryById(inventoryId);
+    if (inventory) {
+        document.getElementById('update-inventory-id').value = inventory.inventoryId;
+        document.getElementById('update-warehouse-name').textContent = inventory.warehouse.warehouseName;
+        document.getElementById('update-product-name').textContent = inventory.product.productName;
+        document.getElementById('update-inventory-quantity').value = inventory.quantity;
+    }
+}
+
+// Function to handle the form submission for updating an inventory
+async function handleUpdateInventoryFormSubmit(event) {
+    event.preventDefault();
+    const inventory = {
+        inventoryId: parseInt(document.getElementById('update-inventory-id').value),
+        warehouseId: getWarehouseByName(document.getElementById('update-warehouse-name').value),
+        productId: getProductByName(document.getElementById('update-product-name').value),
+        quantity: parseInt(document.getElementById('update-inventory-quantity').value),
+    };
+    const updatedInventory = await updateInventory(inventory);
+    if (updatedInventory) {
+        // Update the table row
+        const inventoryRow = document.querySelector(`#inventory-table-body tr:nth-child(${inventory.inventoryId})`);
+        inventoryRow.innerHTML = `
+        <td>${updatedInventory.inventoryId}</td>
+        <td>${updatedInventory.warehouse.warehouseName}</td>
+        <td>${updatedInventory.product.productName}</td>
+        <td>${updatedInventory.quantity}</td>
+        <td>
+            <button class="edit-button" onclick="editInventory(${updatedInventory.inventoryId})">Edit</button>
+        </td>
+        <td>
+            <button class="delete-button" onclick="deleteInventoryConfirmation(${updatedInventory.inventoryId})">Delete</button>
+        </td>
+        `;
+        // Toggle back to the new inventory form
+        toggleForms('new-inventory-form');
+    }
+}
+
+// Function to handle the cancel button click in the update inventory form
+function handleUpdateCancelButtonClick() {
+    toggleForms('new-inventory-form');
+}
+
+// Function to handle the delete button click in the inventory row
+async function deleteInventoryConfirmation(inventoryId) {
+    const confirmation = confirm('Are you sure you want to delete this inventory?');
+    if (confirmation) {
+        const inventory = await getInventoryById(inventoryId);
+        if (inventory) {
+            deleteInventory(inventory);
+            const inventoryRow = document.querySelector(`#inventory-table-body tr:nth-child(${inventoryId})`);
+            inventoryRow.remove();
+        }
+    }
+}
+
+// Function to toggle between the new inventory form and the update inventory form
+function toggleForms(formId) {
+    const newInventoryForm = document.getElementById('new-inventory-form');
+    const updateInventoryForm = document.getElementById('update-inventory-form');
+    const deleteInventoryForm = document.getElementById('delete-inventory-form');
+
+    if (formId === 'new-inventory-form') {
+        newInventoryForm.style.display = 'block';
+        updateInventoryForm.style.display = 'none';
+        deleteInventoryForm.style.display = 'none';
+    } else if (formId === 'update-inventory-form') {
+        newInventoryForm.style.display = 'none';
+        updateInventoryForm.style.display = 'block';
+        deleteInventoryForm.style.display = 'none';
+    } else if (formId === 'delete-inventory-form') {
+        newInventoryForm.style.display = 'none';
+        updateInventoryForm.style.display = 'none';
+        deleteInventoryForm.style.display = 'block';
+    }
+}
+
+// Function to handle the edit button click in the inventory row
+async function editInventory(inventoryId) {
+    await populateUpdateInventoryForm(inventoryId);
+    toggleForms('update-inventory-form');
+}
+
+// Function to handle the delete button click in the inventory row
+async function deleteInventoryConfirmation(inventoryId) {
+    const confirmation = confirm('Are you sure you want to delete this inventory?');
+    if (confirmation) {
+        const inventory = await getInventoryById(inventoryId);
+        if (inventory) {
+            deleteInventory(inventory);
+            const inventoryRow = document.querySelector(`#inventory-table-body tr:nth-child(${inventoryId})`);
+            inventoryRow.remove();
+        }
+    }
+}
+
+// Function to handle the cancel button click in the delete inventory form
+function handleDeleteCancelButtonClick() {
+    toggleForms('new-inventory-form');
+}
+
+// Initial setup
+document.getElementById('new-inventory-form').addEventListener('submit', handleNewInventoryFormSubmit);
+document.getElementById('update-inventory-form').addEventListener('submit', handleUpdateInventoryFormSubmit);
+document.getElementById('update-cancel-button').addEventListener('click', handleUpdateCancelButtonClick);
+document.getElementById('delete-cancel-button').addEventListener('click', handleDeleteCancelButtonClick);
+
+populateInventoryTable();
