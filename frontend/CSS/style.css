@@ -137,3 +137,20 @@ tbody tr td {
   background-color: rgb(170, 170, 170);
   cursor: pointer;
 }
+
+.edit-button,
+.delete-button {
+  background-color: rgb(136, 136, 136);
+  border: none;
+  border-radius: 8px;
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-weight: bold;
+  color: white;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+  background-color: rgb(170, 170, 170);
+  cursor: pointer;
+}

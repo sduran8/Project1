@@ -14,11 +14,11 @@ async function getAllWarehouses() {
 }
 
 // Function to send GET request to fetch a warehouse by ID
-async function getWarehouseById(id) {
+async function getWarehouseById(warehouseid) {
     try {
-        const response = await fetch(`http://localhost:8282/warehouses/warehouse/${id}`);
+        const response = await fetch(`http://localhost:8282/warehouses/warehouse/${warehouseid}`);
         if (!response.ok) {
-            throw new Error(`Error retrieving warehouse with ID ${id}`);
+            throw new Error(`Error retrieving warehouse with ID ${warehouseid}`);
         }
         const warehouse = await response.json();
         return warehouse;
@@ -195,6 +195,7 @@ async function fetchAllWarehousesAndUpdateTable() {
             const editCell = document.createElement('td');
             const editButton = document.createElement('button');
             editButton.textContent = 'Edit';
+            editButton.classList.add('button'); // Add button class
             editButton.addEventListener('click', () => {
                 populateFormFields(warehouse);
             });
@@ -204,6 +205,7 @@ async function fetchAllWarehousesAndUpdateTable() {
             const deleteCell = document.createElement('td');
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Delete';
+            deleteButton.classList.add('button'); // Add button class
             deleteButton.addEventListener('click', () => {
                 handleWarehouseDeletion(warehouse.warehouseId);
             });

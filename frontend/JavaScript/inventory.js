@@ -13,43 +13,142 @@ function fetchInventory() {
 
 // Create or update inventory
 function saveInventory(inventoryData) {
-    let url = 'http://localhost:8282/inventory/inventory';
-    let method = 'POST';
+    // Get the warehouse and product IDs based on their names
+    const warehouseName = inventoryData.warehouse.warehouseName;
+    const productName = inventoryData.product.productName;
 
-    if (inventoryData.inventoryId) {
-        url += '/' + inventoryData.inventoryId;
-        method = 'PUT';
-    }
+    Promise.all([
+        fetchWarehouseIdByName(warehouseName),
+        fetchProductIdByName(productName)
+    ])
+        .then(([warehouseId, productId]) => {
+            inventoryData.warehouse = { id: warehouseId };
+            inventoryData.product = { id: productId };
 
-    fetch(url, {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(inventoryData),
-    })
-        .then(response => response.json())
-        .then(data => {
-            // Display success message or handle errors
-            console.log('Inventory saved:', data);
-            // Fetch inventory again to update the table
-            fetchInventory();
+            let url = 'http://localhost:8282/inventory/inventory';
+            let method = 'POST';
+
+            if (inventoryData.inventoryId) {
+                url += '/' + inventoryData.inventoryId;
+                method = 'PUT';
+            }
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(inventoryData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Display success message or handle errors
+                    console.log('Inventory saved:', data);
+                    // Fetch inventory again to update the table
+                    fetchInventory();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         })
         .catch(error => {
             console.error('Error:', error);
         });
 }
+// Create or update inventory
+function saveInventory(inventoryData) {
+  // Get the warehouse and product IDs based on their names
+  const warehouseName = inventoryData.warehouse.warehouseName;
+  const productName = inventoryData.product.productName;
+
+  Promise.all([
+    fetchWarehouseIdByName(warehouseName),
+    fetchProductIdByName(productName)
+  ])
+    .then(([warehouseId, productId]) => {
+      inventoryData.warehouse = { id: warehouseId };
+      inventoryData.product = { id: productId };
+
+      let url = 'http://localhost:8282/inventory/inventory';
+      let method = 'POST';
+
+      if (inventoryData.inventoryId) {
+        url += '/' + inventoryData.inventoryId;
+        method = 'PUT';
+      }
+
+      fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(inventoryData),
+      })
+        .then(response => response.json())
+        .then(data => {
+          // Display success message or handle errors
+          console.log('Inventory saved:', data);
+          // Fetch inventory again to update the table
+          fetchInventory();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+
+// Function to fetch warehouse ID by name
+function fetchWarehouseIdByName(warehouseName) {
+    return fetch('http://localhost:8282/warehouses')
+        .then(response => response.json())
+        .then(warehouses => {
+            const warehouse = warehouses.find(warehouse => warehouse.name === warehouseName);
+            if (warehouse) {
+                return warehouse.id;
+            } else {
+                throw new Error(`Warehouse with name '${warehouseName}' not found.`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            return null;
+        });
+}
+
+// Function to fetch product ID by name
+function fetchProductIdByName(productName) {
+    return fetch('http://localhost:8282/products')
+        .then(response => response.json())
+        .then(products => {
+            const product = products.find(product => product.name === productName);
+            if (product) {
+                return product.id;
+            } else {
+                throw new Error(`Product with name '${productName}' not found.`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            return null;
+        });
+}
 
 // Delete inventory
 function deleteInventory(inventoryId) {
-    fetch('http://localhost:8282/inventory/' + inventoryId, {
+    fetch('http://localhost:8282/inventory/inventory/' + inventoryId, {
         method: 'DELETE',
     })
         .then(response => {
-            // Display success message or handle errors
-            console.log('Inventory deleted');
-            // Fetch inventory again to update the table
-            fetchInventory();
+            if (response.ok) {
+                console.log('Inventory deleted');
+                fetchInventory();
+            } else {
+                throw new Error('Unable to delete the inventory.');
+            }
         })
         .catch(error => {
             console.error('Error:', error);
@@ -60,28 +159,48 @@ function deleteInventory(inventoryId) {
 document.getElementById('new-inventory-form').addEventListener('submit', function (event) {
     event.preventDefault();
 
-    const inventoryData = {
-        inventoryId: document.getElementById('new-inventory-id').value,
-        warehouse: { name: document.getElementById('new-warehouse-name').value },
-        product: { name: document.getElementById('new-product-name').value },
-        quantity: parseInt(document.getElementById('new-inventory-quantity').value),
-    };
+    const warehouseName = document.getElementById('new-warehouse-name').value;
+    const productName = document.getElementById('new-product-name').value;
+    const quantity = parseInt(document.getElementById('new-inventory-quantity').value);
 
-    saveInventory(inventoryData);
+    Promise.all([fetchWarehouseIdByName(warehouseName), fetchProductIdByName(productName)])
+        .then(([warehouseId, productId]) => {
+            const inventoryData = {
+                inventoryId: document.getElementById('new-inventory-id').value,
+                warehouse: { id: warehouseId },
+                product: { id: productId },
+                quantity: quantity,
+            };
+
+            saveInventory(inventoryData);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 });
 
 // Event listener for form submission (update)
 document.getElementById('update-inventory-form').addEventListener('submit', function (event) {
     event.preventDefault();
 
-    const inventoryData = {
-        inventoryId: document.getElementById('update-inventory-id').value,
-        warehouse: { name: document.getElementById('update-warehouse-name').value },
-        product: { name: document.getElementById('update-product-name').value },
-        quantity: parseInt(document.getElementById('update-inventory-quantity').value),
-    };
+    const warehouseName = document.getElementById('update-warehouse-name').value;
+    const productName = document.getElementById('update-product-name').value;
+    const quantity = parseInt(document.getElementById('update-inventory-quantity').value);
 
-    saveInventory(inventoryData);
+    Promise.all([fetchWarehouseIdByName(warehouseName), fetchProductIdByName(productName)])
+        .then(([warehouseId, productId]) => {
+            const inventoryData = {
+                inventoryId: document.getElementById('update-inventory-id').value,
+                warehouse: { id: warehouseId },
+                product: { id: productId },
+                quantity: quantity,
+            };
+
+            saveInventory(inventoryData);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 });
 
 // Event listener for delete button click
@@ -103,11 +222,11 @@ function updateInventoryTable(inventoryData) {
         row.appendChild(idCell);
 
         const warehouseCell = document.createElement('td');
-        warehouseCell.textContent = inventory.warehouse.name;
+        warehouseCell.textContent = inventory.warehouse.warehouseName;
         row.appendChild(warehouseCell);
 
         const productCell = document.createElement('td');
-        productCell.textContent = inventory.product.name;
+        productCell.textContent = inventory.product.productName;
         row.appendChild(productCell);
 
         const quantityCell = document.createElement('td');
@@ -117,6 +236,7 @@ function updateInventoryTable(inventoryData) {
         const editCell = document.createElement('td');
         const editButton = document.createElement('button');
         editButton.textContent = 'Edit';
+        editButton.classList.add('button');
         editButton.addEventListener('click', function () {
             // Populate the update form with inventory data
             document.getElementById('update-inventory-id').value = inventory.inventoryId;
@@ -134,6 +254,7 @@ function updateInventoryTable(inventoryData) {
         const deleteCell = document.createElement('td');
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('button');
         deleteButton.addEventListener('click', function () {
             // Populate the delete form with inventory data
             document.getElementById('delete-inventory-id').value = inventory.inventoryId;

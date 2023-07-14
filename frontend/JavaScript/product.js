@@ -9,7 +9,7 @@ async function getAllProducts() {
         return products;
     } catch (error) {
         console.error(error);
-        return [];
+        return null;
     }
 }
 
@@ -41,8 +41,8 @@ async function createProduct(product) {
         if (!response.ok) {
             throw new Error('Unable to create the product.');
         }
-        const createdProduct = await response.json();
-        return createdProduct;
+        const newProduct = await response.json();
+        return newProduct;
     } catch (error) {
         console.error(error);
         return null;
@@ -60,7 +60,7 @@ async function updateProduct(product) {
             body: JSON.stringify(product),
         });
         if (!response.ok) {
-            throw new Error('Unable to update the product.');
+            throw new Error(`Unable to update the product with ID ${product.productId}`);
         }
         const updatedProduct = await response.json();
         return updatedProduct;
@@ -81,10 +81,12 @@ async function deleteProduct(product) {
             body: JSON.stringify(product),
         });
         if (!response.ok) {
-            throw new Error('Unable to delete the product.');
+            throw new Error(`Unable to delete the product with ID ${product.productId}`);
         }
+        return true;
     } catch (error) {
         console.error(error);
+        return false;
     }
 }
 
@@ -93,22 +95,23 @@ function displayProductData(product) {
     const productTableBody = document.getElementById('product-table-body');
     const row = document.createElement('tr');
     row.innerHTML = `
-    <td>${product.productId}</td>
-    <td>${product.productName}</td>
-    <td>${product.productCategory}</td>
-    <td>${product.productDescription}</td>
-    <td>${product.productPrice}</td>
-    <td>${product.productDimensions}</td>
-    <td>${product.productWeight}</td>
-    <td>
-      <button class="edit-button" onclick="editProduct(${product.productId})">Edit</button>
-    </td>
-    <td>
-      <button class="delete-button" onclick="deleteProductConfirmation(${product.productId})">Delete</button>
-    </td>
-  `;
+        <td>${product.productId}</td>
+        <td>${product.productName}</td>
+        <td>${product.productCategory}</td>
+        <td>${product.productDescription}</td>
+        <td>${product.productPrice}</td>
+        <td>${product.productDimensions}</td>
+        <td>${product.productWeight}</td>
+        <td>
+        <button class="edit-button" onclick="editProduct(${product.productId})">Edit</button>
+        </td>
+        <td>
+        <button class="delete-button" onclick="deleteProductConfirmation(${product.productId})">Delete</button>
+        </td>
+    `;
     productTableBody.appendChild(row);
 }
+
 
 // Function to populate the table with product data
 async function populateProductTable() {
@@ -175,7 +178,6 @@ async function populateUpdateProductForm(productId) {
 // Function to handle the form submission for updating a product
 async function handleUpdateProductFormSubmit(event) {
     event.preventDefault();
-
     const product = {
         productId: parseInt(document.getElementById('update-product-id').value),
         productName: document.getElementById('update-product-name').value,
@@ -184,26 +186,27 @@ async function handleUpdateProductFormSubmit(event) {
         productPrice: parseFloat(document.getElementById('update-product-price').value),
         productDimensions: document.getElementById('update-product-dimensions').value,
         productWeight: parseFloat(document.getElementById('update-product-weight').value),
-    };
-
+    }
     const updatedProduct = await updateProduct(product);
     if (updatedProduct) {
+        // Update the table row
         const productRow = document.querySelector(`#product-table-body tr:nth-child(${product.productId})`);
         productRow.innerHTML = `
-      <td>${updatedProduct.productId}</td>
-      <td>${updatedProduct.productName}</td>
-      <td>${updatedProduct.productCategory}</td>
-      <td>${updatedProduct.productDescription}</td>
-      <td>${updatedProduct.productPrice}</td>
-      <td>${updatedProduct.productDimensions}</td>
-      <td>${updatedProduct.productWeight}</td>
-      <td>
-        <button class="edit-button" onclick="editProduct(${updatedProduct.productId})">Edit</button>
-      </td>
-      <td>
-        <button class="delete-button" onclick="deleteProductConfirmation(${updatedProduct.productId})">Delete</button>
-      </td>
-    `;
+        <td>${updatedProduct.productId}</td>
+        <td>${updatedProduct.productName}</td>
+        <td>${updatedProduct.productCategory}</td>
+        <td>${updatedProduct.productDescription}</td>
+        <td>${updatedProduct.productPrice}</td>
+        <td>${updatedProduct.productDimensions}</td>
+        <td>${updatedProduct.productWeight}</td>
+        <td>
+            <button class="edit-button" onclick="editProduct(${updatedProduct.productId})">Edit</button>
+        </td>
+        <td>
+            <button class="delete-button" onclick="deleteProductConfirmation(${updatedProduct.productId})">Delete</button>
+        </td>
+        `;
+        // Toggle back to the new product form
         toggleForms('new-product-form');
     }
 }
@@ -219,7 +222,9 @@ async function deleteProductConfirmation(productId) {
     if (confirmation) {
         const product = await getProductById(productId);
         if (product) {
+            // Delete the product
             deleteProduct(product);
+            // Remove the table row
             const productRow = document.querySelector(`#product-table-body tr:nth-child(${productId})`);
             productRow.remove();
         }
