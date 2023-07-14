@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         crossorigin="anonymous" />
     <link rel="stylesheet" href="/frontend/CSS/style.css" />
-    <script src="/frontend/JavaScript/script.js" defer> </script>
+    <script src="/frontend/JavaScript/warehouse.js" defer> </script>
 </head>
 
 <body>
@@ -32,6 +32,9 @@
 
             <!-- NEW WAREHOUSE -->
             <form class="form-container col-lg-6" id="new-warehouse-form">
+
+                <input type="hidden" id="new-warehouse-id" name="new-warehouse-id" class="form-control">
+
                 <label for="new-warehouse-name" class="form-label"> Name </label>
                 <input type="text" id="new-warehouse-name" class="form-control">
 
@@ -49,6 +52,9 @@
 
             <!-- UPDATE WAREHOUSE -->
             <form class="form-container col-lg-6" id="update-warehouse-form" style="display: none;">
+                <label for="update-warehouse-id" class="form-label"> ID </label>
+                <input type="text" id="update-warehouse-id" class="form-control" disabled>
+
                 <label for="update-warehouse-name" class="form-label"> Name </label>
                 <input type="text" id="update-warehouse-name" class="form-control">
             
@@ -68,6 +74,9 @@
 
             <!-- DELETE WAREHOUSE -->
             <form class="form-container col-lg-6" id="delete-warehouse-form" style="display: none;">
+                <label for="delete-warehouse-id" class="form-label"> ID </label>
+                <input type="text" id="delete-warehouse-id" class="form-control" disabled>
+
                 <label for="delete-warehouse-name" class="form-label"> Name </label>
                 <input type="text" id="delete-warehouse-name" class="form-control">
             
@@ -82,7 +91,7 @@
             
                 <input id="delete-button" name="delete-button" type="submit" value="Delete Warehouse" class="button" />
 
-                <button id="update-delete-button" class="button"> Cancel </button>
+                <button id="delete-cancel-button" class="button"> Cancel </button>
             
             </form>
 

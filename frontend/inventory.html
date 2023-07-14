@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         crossorigin="anonymous" />
     <link rel="stylesheet" href="/frontend/CSS/style.css" />
-    <script src="/frontend/JavaScript/script.js" defer> </script>
+    <script src="/frontend/JavaScript/inventory.js" defer> </script>
 </head>
 
 <body>
@@ -31,7 +31,9 @@
         <div class="table">
     
             <!-- NEW INVENTORY -->
-            <form class="form-container col-lg-6" id="form">
+            <form class="form-container col-lg-6" id="new-inventory-form">
+
+                <input type="hidden" id="new-inventory-id" class="form-control">
                 
                 <label for="new-warehouse-name" class="form-label"> Warehouse </label>
                 <input type="text" id="new-warehouse-name" class="form-control">
@@ -46,7 +48,9 @@
             </form>
 
             <!-- UPDATE INVENTORY -->
-            <form class="form-container col-lg-6" id="form" style="display: none;">
+            <form class="form-container col-lg-6" id="update-inventory-form" style="display: none;">
+                <label for="update-inventory-id" class="form-label"> ID </label>
+                <input type="text" id="update-inventory-id" class="form-control" disabled>
             
                 <label for="update-warehouse-name" class="form-label"> Warehouse </label>
                 <input type="text" id="update-warehouse-name" class="form-control">
@@ -63,7 +67,9 @@
             </form>
 
             <!-- DELETE INVENTORY -->
-            <form class="form-container col-lg-6" id="form" style="display: none;">
+            <form class="form-container col-lg-6" id="delete-inventory-form" style="display: none;">
+                <label for="delete-inventory-id" class="form-label"> ID </label>
+                <input type="text" id="delete-inventory-id" class="form-control" disabled>
             
                 <label for="delete-warehouse-name" class="form-label"> Warehouse </label>
                 <input type="text" id="delete-warehouse-name" class="form-control">

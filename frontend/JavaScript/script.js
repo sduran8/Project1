@@ -13,45 +13,46 @@ let inventory = []
 //////////////////////////////////////////////////
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Warehouses
-    let xhr1 = new XMLHttpRequest()
+    // Event listener for fetching warehouses
+    let xhr1 = new XMLHttpRequest();
     xhr1.onreadystatechange = () => {
-        if(xhr1.readyState == 4) {
-            let w = JSON.parse(xhr1.responseText)
+        if (xhr1.readyState == 4) {
+            let w = JSON.parse(xhr1.responseText);
             w.forEach(newWarehouse => {
-                addWarehouseToTable(newWarehouse)
-            })
+                addWarehouseToTable(newWarehouse);
+            });
         }
-    }
-    xhr1.open('GET',warehouseURL)
-    xhr1.send()
+    };
+    xhr1.open('GET', warehouseURL);
+    xhr1.send();
 
-    //Products
-    let xhr2 = new XMLHttpRequest()
+    // Event listener for fetching products
+    let xhr2 = new XMLHttpRequest();
     xhr2.onreadystatechange = () => {
         if (xhr2.readyState == 4) {
-            let p = JSON.parse(xhr2.responseText)
+            let p = JSON.parse(xhr2.responseText);
             p.forEach(newProduct => {
-                addProductToTable(newProduct)
-            })
+                addProductToTable(newProduct);
+            });
         }
-    }
-    xhr2.open('GET', productURL)
-    xhr2.send()
+    };
+    xhr2.open('GET', productURL);
+    xhr2.send();
 
-    //Inventory
-    let xhr3 = new XMLHttpRequest()
+    // Event listener for fetching inventory
+    let xhr3 = new XMLHttpRequest();
     xhr3.onreadystatechange = () => {
         if (xhr3.readyState == 4) {
-            let i = JSON.parse(xhr3.responseText)
+            let i = JSON.parse(xhr3.responseText);
             i.forEach(newInventory => {
-                addInventoryToTable(newInventory)
-            })
+                addInventoryToTable(newInventory);
+            });
         }
-    }
-    xhr3.open('GET', inventoryURL)
-    xhr3.send()
-})
+    };
+    xhr3.open('GET', inventoryURL);
+    xhr3.send();
+});
+
 
 function addWarehouseToTable(newWarehouse) {
     let tr = document.createElement('tr');
@@ -108,7 +109,6 @@ function addProductToTable(newProduct) {
     editBtn.innerHTML = `<button class="btn btn-sm" id="edit-button" onclick="activateEditForm(${newProduct.productId})" style="background-color: rgb(133, 200, 135); transition: background-color 0.3s; cursor: pointer;" onmouseover="this.style.backgroundColor = 'rgb(170, 170, 170)'" onmouseout="this.style.backgroundColor = 'rgb(133, 200, 135)'">Edit</button>`;
     deleteBtn.innerHTML = `<button class="btn btn-sm" id="delete-button" onclick="activateDeleteForm(${newProduct.productId})" style="background-color: rgb(242, 132, 132); border: none; transition: background-color 0.3s; cursor: pointer;" onmouseover="this.style.backgroundColor = 'rgb(170, 170, 170)'" onmouseout="this.style.backgroundColor = 'rgb(242, 132, 132)'">Delete</button>`;
 
-
     tr.appendChild(id);
     tr.appendChild(name);
     tr.appendChild(category);
@@ -149,9 +149,9 @@ function addInventoryToTable(newInventory) {
     tr.appendChild(editBtn);
     tr.appendChild(deleteBtn);
 
-    tr.setAttribute('id', 'TR' + newInventory.inventoryid);
+    tr.setAttribute('id', 'TR' + newInventory.inventoryId);
 
-    document.getElementById('inventory-table-body').appendChild(tr);
+    document.getElementById("inventory-table-body").appendChild(tr);
     inventory.push(newInventory);
 }
 
@@ -163,12 +163,12 @@ document.getElementById('new-warehouse-form').addEventListener('submit', (event)
     event.preventDefault();
     let inputData = new FormData(document.getElementById('new-warehouse-form'));
     let newWarehouse = {
-        warehouseName : inputData.get('new-warehouse-name'),
+        warehouseName: inputData.get('new-warehouse-name'),
         warehouseMaximumCapacity: inputData.get('new-warehouse-capacity'),
         warehouseLocation: inputData.get('new-warehouse-location'),
         warehouseAddress: inputData.get('new-warehouse-address'),
-        }
-    doPostRequest(newWarehouse);
+    }
+    doWarehousePostRequest(newWarehouse);
 });
 
 document.getElementById('new-product-form').addEventListener('submit', (event) => {
@@ -182,7 +182,7 @@ document.getElementById('new-product-form').addEventListener('submit', (event) =
         productDimensions: inputData.get('new-product-dimensions'),
         productWeight: inputData.get('new-product-weight')
     }
-    doPostRequest(newProduct);
+    doProductPostRequest(newProduct);
 });
 
 document.getElementById('new-inventory-form').addEventListener('submit', (event) => {
@@ -202,13 +202,13 @@ document.getElementById('new-inventory-form').addEventListener('submit', (event)
             productId: productId,
             quantity: inputData.get('new-inventory-quantity')
         };
-        doPostRequest(newInventory);
+        doInventoryPostRequest(newInventory);
     } else {
         console.log('Invalid warehouse name or product name.');
     }
 });
 
-async function doPostRequest(newWarehouse) {
+async function doWarehousePostRequest(newWarehouse) {
     let returnedData = await fetch(warehouseURL + '/warehouse', {
         method: 'POST',
         headers: {
@@ -222,7 +222,7 @@ async function doPostRequest(newWarehouse) {
     document.getElementById('new-warehouse-form').reset();
 }
 
-async function doPostRequest(newProduct) {
+async function doProductPostRequest(newProduct) {
     let returnedData = await fetch(productURL + '/product', {
         method: 'POST',
         headers: {
@@ -236,7 +236,7 @@ async function doPostRequest(newProduct) {
     document.getElementById('new-product-form').reset();
 }
 
-async function doPostRequest(newInventory) {
+async function doInventoryPostRequest(newInventory) {
     let returnedData = await fetch(inventoryURL + '/inventory', {
         method: 'POST',
         headers: {
@@ -663,7 +663,7 @@ function getWarehouseIdByName(name) {
             return warehouses[i].warehouseId;
         }
     }
-    return null; 
+    return null;
 }
 
 function getProductIdByName(name) {

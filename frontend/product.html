@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         crossorigin="anonymous" />
     <link rel="stylesheet" href="/frontend/CSS/style.css" />
-    <script src="/frontend/JavaScript/script.js" defer> </script>
+    <script src="/frontend/JavaScript/product.js" defer> </script>
 </head>
 
 <body>
@@ -31,7 +31,10 @@
         <div class="table">
     
             <!-- NEW PRODUCT-->
-            <form class="form-container col-lg-6" id="form">
+            <form class="form-container col-lg-6" id="new-product-form">
+                
+                <input type="hidden" id="new-product-id" class="form-control">
+
                 <label for="new-product-name" class="form-label"> Name </label>
                 <input type="text" id="new-product-name" class="form-control">
     
@@ -54,7 +57,10 @@
             </form>
 
             <!-- UPDATE PRODUCT-->
-            <form class="form-container col-lg-6" id="form" style="display: none;">
+            <form class="form-container col-lg-6" id="update-product-form" style="display: none;">
+                <label for="update-product-id" class="form-label"> ID </label>
+                <input type="text" id="update-product-id" class="form-control" disabled>
+
                 <label for="update-product-name" class="form-label"> Name </label>
                 <input type="text" id="update-product-name" class="form-control">
             
@@ -79,7 +85,10 @@
             </form>
 
             <!-- DELETE PRODUCT-->
-            <form class="form-container col-lg-6" id="form" style="display: none;">
+            <form class="form-container col-lg-6" id="delete-product-form" style="display: none;">
+                <label for="delete-product-id" class="form-label"> ID </label>
+                <input type="text" id="delete-product-id" class="form-control" disabled>
+
                 <label for="delete-product-name" class="form-label"> Name </label>
                 <input type="text" id="delete-product-name" class="form-control">
             
@@ -100,7 +109,7 @@
             
                 <input id="delete-button" name="delete-button" type="submit" value="Delete Product" class="button" />
 
-                <button id="update-cancel-button" class="button"> Cancel </button>
+                <button id="delete-cancel-button" class="button"> Cancel </button>
             </form>
     
             <table width="100%">
